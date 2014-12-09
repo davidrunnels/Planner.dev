@@ -1,34 +1,38 @@
 <html>
-  <head>
-    <title></title>
-    <style>
+<head>
+<title></title>
+<style>
 
 body {
     color: blue;
-    background-image: url(img/texture-brown-paper-bag-520x556.jpg);
+    background-image: url(img/chalkboard-black.jpg);
 }
 
 h1 {
-    color: red;
+    color: white;
 }
 
 h2 {
-    color: maroon;
+    color: white;
     text-decoration: underline;
-    font-family: Helvetica, Arial, Sans-Serif
+    font-family: 'Architects Daughter', Arial, Sans-Serif
 }
 
 body {
-    background-color: tan;
-    background-image: url(http://planner.dev/img/texture-brown-paper-bag-520x556.jpg);
+    background-color: black;
+    background-image: url(http://planner.dev/img/chalkboard-black.jpg);
 }
 
 ul {list-style: square;
-    font-family: Helvetica, Arial, Sans-Serif
+    color: white;
+    font-family: 'Architects Daughter', Arial, Sans-Serif
 }
 
-label {font-family: Helvetica, Arial, Sans-Serif}
+label {font-family: 'Architects Daughter', Arial, Sans-Serif}
+
+p {color: white;}
+
+input {font-family: 'Architects Daughter', Arial, Sans-Serif}
 
 
 </style>
-    
