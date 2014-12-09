@@ -5,6 +5,7 @@
 
 body {
     color: blue;
+    background-image: url(img/texture-brown-paper-bag-520x556.jpg);
 }
 
 h1 {
@@ -12,11 +13,22 @@ h1 {
 }
 
 h2 {
-    color: green;
+    color: maroon;
     text-decoration: underline;
+    font-family: Helvetica, Arial, Sans-Serif
 }
 
 body {
     background-color: tan;
+    background-image: url(http://planner.dev/img/texture-brown-paper-bag-520x556.jpg);
 }
+
+ul {list-style: square;
+    font-family: Helvetica, Arial, Sans-Serif
+}
+
+label {font-family: Helvetica, Arial, Sans-Serif}
+
+
+</style>
     
