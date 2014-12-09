@@ -15,7 +15,7 @@ h1 {
 h2 {
     color: white;
     text-decoration: underline;
-    font-family: 'Architects Daughter', Arial, Sans-Serif
+    font-family: 'Amatic SC', Arial, Sans-Serif
 }
 
 body {
@@ -23,16 +23,21 @@ body {
     background-image: url(http://planner.dev/img/chalkboard-black.jpg);
 }
 
-ul {list-style: square;
+ul {list-style: circle;
     color: white;
-    font-family: 'Architects Daughter', Arial, Sans-Serif
+    font-size: 125%;
+    font-family: 'Amatic SC', Arial, Sans-Serif
 }
 
-label {font-family: 'Architects Daughter', Arial, Sans-Serif}
+label {font-size: 125%;
+    font-family: 'Amatic SC', Arial, Sans-Serif}
 
 p {color: white;}
 
-input {font-family: 'Architects Daughter', Arial, Sans-Serif}
+input {font-size: 150%;
+    font-family: 'Amatic SC', Arial, Sans-Serif}
 
+#submit1 {font-size: 125%;
+    font-family: 'Amatic SC', Arial, Sans-Serif}
 
 </style>
