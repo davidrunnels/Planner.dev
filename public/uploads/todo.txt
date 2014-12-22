@@ -1,2 +1,3 @@
-nap
-nap
+eat
+sleep
+breathe
