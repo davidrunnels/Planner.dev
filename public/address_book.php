@@ -12,11 +12,37 @@ function savefile($filename, $array) {
 	// return $array;
 }
 
-$addressBook = [
-['The White House', '1600 Pennsylvania Avenue NW', 'Washington', 'DC', '20500', '8887776666'],
-['Marvel Comics', 'P.O. Box 1527', 'Long Island City', 'NY', '11101', '8887776666'],
-['LucasArts', 'P.O. Box 29901', 'San Francisco', 'CA', '94129-0901', '8887776666']
-];
+function sanitize($array) {
+    foreach ($array as $key => $value) {
+        $array[$key] = htmlspecialchars(strip_tags($value));  // Overwrite each value.
+    }
+    return $array;
+}
+
+$filename = 'address_book.csv';
+
+$handle = fopen($filename, 'r');
+
+$addressBook = [];
+
+while(!feof($handle)) {
+	$row = fgetcsv($handle);
+
+	if (!empty($row)) {
+		$addressBook[] = $row;
+	}
+}
+
+fclose($handle);
+
+// print_r($addressBook);
+
+
+// $addressBook = [
+// ['The White House', '1600 Pennsylvania Avenue NW', 'Washington', 'DC', '20500', '8887776666'],
+// ['Marvel Comics', 'P.O. Box 1527', 'Long Island City', 'NY', '11101', '8887776666'],
+// ['LucasArts', 'P.O. Box 29901', 'San Francisco', 'CA', '94129-0901', '8887776666']
+// ];
 
 // Check for $_POST Request.
 
@@ -29,6 +55,7 @@ $addressBook = [
 if (!empty($_POST)) {
 	//work with post data
 	// var_dump($_POST);
+	$_POST = sanitize($_POST);
 	foreach ($_POST as $key => $value) {
 		if (!empty($value)) {
 			$fields[] = $value;
@@ -45,12 +72,17 @@ if (!empty($_POST)) {
 	array_push($addressBook, $fields);
 	// var_dump($addressBook);
  	// save to file
-	savefile('address_book.csv', $addressBook);
+	savefile($fileName, $addressBook);
 }
 
 // var_dump($addressBook);
 
-
+if(isset($_GET['remove'])) {
+	$key = $_GET['remove'];
+	unset($addressBook[$key]);
+	$addressBook = array_values($addressBook);
+	savefile('address_book.csv', $addressBook);
+}
 ?>
 
 <html>
@@ -59,25 +91,33 @@ if (!empty($_POST)) {
 </head>	
 <body>
 
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Address</th>
-			<th>City</th>
-			<th>State</th>
-			<th>Zip</th>
-			<th>Phone</th>
-		</tr>
-		<!-- Start working with php, and echoing out the data from $addressBook -->
-		<tr>
-			<? foreach ($addressBook as $fields) : ?>
-			<tr>
-				<? foreach ($fields as $value) : ?>
-				<td><?= $value; ?></td>
-			<? endforeach; ?>
-
-		</tr>
+	<!-- <ul>
+	<? foreach ($addressBook as $key => $value): ?>
+	<li><?= $value; ?><a href="/address_book.php?remove=<?= $key; ?>">X</a></li>
 	<? endforeach; ?>
+
+</ul> -->
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Address</th>
+		<th>City</th>
+		<th>State</th>
+		<th>Zip</th>
+		<th>Phone</th>
+	</tr>
+	<!-- Start working with php, and echoing out the data from $addressBook -->
+	<tr>
+		<? foreach ($addressBook as $key => $fields) : ?>
+		<tr>
+			<? foreach ($fields as $value) : ?>
+			<td><?= $value; ?></td>
+			
+		<? endforeach; ?>
+		<td><a href="/address_book.php?remove=<?= $key; ?>">X</a></td>
+	</tr>
+<? endforeach; ?>
 </tr>
 </table>
 
