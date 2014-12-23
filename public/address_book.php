@@ -4,7 +4,7 @@ $fileName = 'address_book.csv';
 
 function savefile($filename, $array) {
 	$handle = fopen('address_book.csv', 'w');
-	var_dump($array);
+	// var_dump($array);
 	foreach ($array as $fields) {
 		fputcsv($handle, $fields);
 	}
@@ -22,13 +22,22 @@ $addressBook = [
 
 
 // Check for empty field
+
+
 	//Add data from form to $addressBook array.
 
 if (!empty($_POST)) {
 	//work with post data
 	// var_dump($_POST);
-	
-	$fields = [ $_POST['name'], $_POST['street'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['phone'] ];
+	foreach ($_POST as $key => $value) {
+		if (!empty($value)) {
+			$fields[] = $value;
+		} else {
+			echo ("<p>You must complete {$key} field.</p>");
+		}
+	}
+
+	// $fields = [ $_POST['name'], $_POST['street'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['phone'] ];
 	// var_dump($fields);
 
 	// add to array
