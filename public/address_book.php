@@ -4,6 +4,11 @@ class AddressDataStore
 {
 	public $filename = '';
 
+	function __construct($filename = 'address_book.csv')
+	{
+		$this->filename = $filename;
+	}
+
 	function readAddressBook()
 	{
 		$addressBook = [];
@@ -25,6 +30,7 @@ class AddressDataStore
 
 	function writeAddressBook($addressesArray)
 	{
+		// var_dump($addressesArray);
          // Code to write $addressesArray to file $this->filename
 		$handle = fopen($this->filename, 'w');
 			// var_dump($array);
@@ -42,16 +48,61 @@ class AddressDataStore
         		$array[$key] = htmlspecialchars(strip_tags($value));  // Overwrite each value.
         	}
         	return $array;
-        }
     }
 
-    $address_book = new AddressDataStore();
+  //   function opencsv()
+  //   {
+		// $contentsarray = [];
+		// if(filesize($this->filename) != 0) {
+		// 	$handle = fopen($this->filename, 'r');
+		// 	$contents = trim(fread($handle, filesize($this->filename)));
+		// 	$contentsarray = explode("\n", $contents);
+		// 	fclose($handle);
 
-    $address_book->filename = "address_book.csv";
+		// 	var_dump($contentsarray);
+		// } 
+
+		// return $contentsarray;
+
+// 	}
+}
+
+    $address_object = new AddressDataStore();
+
+    $address_object->filename = "address_book.csv";
 
     // var_dump($address_book);
 
-    $addressBook = $address_book->readAddressBook();
+    $addressBook = $address_object->readAddressBook();
+
+if (count($_FILES) > 0 && $_FILES['file1']['error'] == UPLOAD_ERR_OK) 
+{
+    // Set the destination directory for uploads
+	$uploadDir = '/vagrant/sites/planner.dev/public/uploads/';
+
+    // Grab the filename from the uploaded file by using basename
+	$filename = basename($_FILES['file1']['name']);
+
+
+	if (substr($filename, -3) == "csv") {
+
+    // Create the saved filename using the file's original name and our upload directory
+		$savedFilename = $uploadDir . $filename;
+
+    // Move the file from the temp location to our uploads directory
+		move_uploaded_file($_FILES['file1']['tmp_name'], $savedFilename);
+
+		$address_new_file = new AddressDataStore($savedFilename);
+
+		$address_array_uploads = $address_object->readAddressBook();
+		$addressBook = array_merge($addressBook, $address_array_uploads);
+		$address_object->writeAddressBook($addressBook);
+		
+		} else {
+			echo "File is not a csv file.";
+		}
+}
+
 
 	// print_r($addressBook);
 
@@ -60,7 +111,7 @@ class AddressDataStore
     if (!empty($_POST)) {
 	//work with post data
 	// var_dump($_POST);
-    	$_POST = $address_book->sanitize($_POST);
+    	$_POST = $address_object->sanitize($_POST);
     	foreach ($_POST as $key => $value) {
     		if (!empty($value)) {
     			$fields[] = $value;
@@ -77,7 +128,7 @@ class AddressDataStore
     	array_push($addressBook, $fields);
 	// var_dump($addressBook);
  	// save to file
-    	$address_book->writeAddressBook($addressBook);
+    	$address_object->writeAddressBook($addressBook);
     }
 
 // var_dump($addressBook);
@@ -86,7 +137,7 @@ class AddressDataStore
     	$key = $_GET['remove'];
     	unset($addressBook[$key]);
     	$addressBook = array_values($addressBook);
-    	$address_book->writeAddressBook($addressBook);
+    	$address_object->writeAddressBook($addressBook);
     }
     ?>
 
@@ -123,7 +174,7 @@ class AddressDataStore
 	<? endforeach; ?>
 
 </ul> -->
-<div>
+<div >
 	<table>
 		<tr>
 			<th>Name</th>
@@ -150,35 +201,45 @@ class AddressDataStore
 
 <h4>Add items to the Address Book</h4>
 <form method="POST" action="address_book.php">
-	<p>
-		<label for="name">Name</label>
-		<input id="name" name="name" type="text">
-	</p>
-	<p>
-		<label for="street">Address</label>
-		<input id="street" name="street" type="text">
-	</p>
-	<p>
-		<label for="city">City</label>
-		<input id="city" name="city" type="text">
-	</p>
-	<p>
-		<label for="state">State</label>
-		<input id="state" name="state" type="text">
-	</p>
-	<p>
-		<label for="zip">Zip Code</label>
-		<input id="zip" name="zip" type="text">
-		<p>
-			<label for="phone">Phone Number</label>
-			<input id="phone" name="phone" type="text">
-		</p>
-	</p>
-	<p>
+	<div class="form-group">
+		<label for="name">Name<br></label>
+		<input class="form-control" id="name" name="name" type="text">
+	</div>
+	<div class="form-group">
+		<label for="street">Address<br></label>
+		<input class="form-control" id="street" name="street" type="text">
+	</div>
+	<div class="form-group">
+		<label for="city">City<br></label>
+		<input class="form-control" id="city" name="city" type="text">
+	</div>
+	<div class="form-group">
+		<label for="state">State<br></label>
+		<input class="form-control" id="state" name="state" type="text">
+	</div>
+	<div class="form-group">
+		<label for="zip">Zip Code<br></label>
+		<input class="form-control" id="zip" name="zip" type="text">
+	</div>
+	<div class="form-group">
+		<label for="phone">Phone Number<br></label>
+		<input class="form-control" id="phone" name="phone" type="text">
+	</div>
+
+	<div class="form-group">
 		<input type="submit" value="add">
-	</p>
+	</div>
 </form>
 
+<form method="POST" enctype="multipart/form-data" action="/address_book.php">
+		<p>
+			<label for="file1">Upload a file: <br></label>
+			<input type="file" id="file1" name="file1">
+		</p>
+		<p>
+			<input type="submit" value="Upload">
+		</p>
+	</form>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
