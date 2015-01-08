@@ -1,93 +1,119 @@
 <?php
 
-$fileName = 'address_book.csv';
+class AddressDataStore
+{
+	public $filename = '';
 
-function savefile($filename, $array) {
-	$handle = fopen('address_book.csv', 'w');
-	// var_dump($array);
-	foreach ($array as $fields) {
-		fputcsv($handle, $fields);
+	function readAddressBook()
+	{
+		$addressBook = [];
+         // Code to read file $this->filename
+		if (($handle = fopen($this->filename, "r")) !== FALSE) {
+			while(!feof($handle)) {
+				$row = fgetcsv($handle);
+
+				if (!empty($row)) {
+					$addressBook[] = $row;
+				}
+			}
+
+			fclose($handle);
+		}
+
+		return $addressBook;
 	}
-	fclose($handle);
-	// return $array;
-}
 
-function sanitize($array) {
-    foreach ($array as $key => $value) {
-        $array[$key] = htmlspecialchars(strip_tags($value));  // Overwrite each value.
+	function writeAddressBook($addressesArray)
+	{
+         // Code to write $addressesArray to file $this->filename
+		$handle = fopen($this->filename, 'w');
+			// var_dump($array);
+		foreach ($addressesArray as $fields) {
+			fputcsv($handle, $fields);
+		}
+		fclose($handle);
+	}
+
+		// $fileName = 'address_book.csv';
+
+
+	function sanitize($array) {
+		foreach ($array as $key => $value) {
+        		$array[$key] = htmlspecialchars(strip_tags($value));  // Overwrite each value.
+        	}
+        	return $array;
+        }
     }
-    return $array;
-}
 
-$filename = 'address_book.csv';
+    $address_book = new AddressDataStore();
 
-$handle = fopen($filename, 'r');
+    $address_book->filename = "address_book.csv";
 
-$addressBook = [];
+    // var_dump($address_book);
 
-while(!feof($handle)) {
-	$row = fgetcsv($handle);
+    $addressBook = $address_book->readAddressBook();
 
-	if (!empty($row)) {
-		$addressBook[] = $row;
-	}
-}
-
-fclose($handle);
-
-// print_r($addressBook);
-
-
-// $addressBook = [
-// ['The White House', '1600 Pennsylvania Avenue NW', 'Washington', 'DC', '20500', '8887776666'],
-// ['Marvel Comics', 'P.O. Box 1527', 'Long Island City', 'NY', '11101', '8887776666'],
-// ['LucasArts', 'P.O. Box 29901', 'San Francisco', 'CA', '94129-0901', '8887776666']
-// ];
-
-// Check for $_POST Request.
-
-
-// Check for empty field
-
+	// print_r($addressBook);
 
 	//Add data from form to $addressBook array.
 
-if (!empty($_POST)) {
+    if (!empty($_POST)) {
 	//work with post data
 	// var_dump($_POST);
-	$_POST = sanitize($_POST);
-	foreach ($_POST as $key => $value) {
-		if (!empty($value)) {
-			$fields[] = $value;
-		} else {
-			echo ("<p>You must complete {$key} field.</p>");
-		}
-	}
+    	$_POST = $address_book->sanitize($_POST);
+    	foreach ($_POST as $key => $value) {
+    		if (!empty($value)) {
+    			$fields[] = $value;
+    		} else {
+    			echo ("<p>You must complete {$key} field.</p>");
+    		}
+    	}
 
 	// $fields = [ $_POST['name'], $_POST['street'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['phone'] ];
 	// var_dump($fields);
 
 	// add to array
 
-	array_push($addressBook, $fields);
+    	array_push($addressBook, $fields);
 	// var_dump($addressBook);
  	// save to file
-	savefile($fileName, $addressBook);
-}
+    	$address_book->writeAddressBook($addressBook);
+    }
 
 // var_dump($addressBook);
 
-if(isset($_GET['remove'])) {
-	$key = $_GET['remove'];
-	unset($addressBook[$key]);
-	$addressBook = array_values($addressBook);
-	savefile('address_book.csv', $addressBook);
-}
-?>
+    if(isset($_GET['remove'])) {
+    	$key = $_GET['remove'];
+    	unset($addressBook[$key]);
+    	$addressBook = array_values($addressBook);
+    	$address_book->writeAddressBook($addressBook);
+    }
+    ?>
 
-<html>
-<head>
-	<title>Address Book</title>
+    <html>
+    <head>
+    	<title>Address Book</title>
+    	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+
+      <!-- Font Awesome -->
+
+      <link rel="stylesheet" href="/font-awesome-4.2.0/css/font-awesome.min.css">
+
+      <!-- Padding -->
+     <!-- <style type="text/css">
+      body { 
+        padding-top: 70px; 
+      }
+  </style> -->
+
+  <link rel="stylesheet" href="/css/sites.css">
 </head>	
 <body>
 
@@ -97,29 +123,30 @@ if(isset($_GET['remove'])) {
 	<? endforeach; ?>
 
 </ul> -->
-
-<table>
-	<tr>
-		<th>Name</th>
-		<th>Address</th>
-		<th>City</th>
-		<th>State</th>
-		<th>Zip</th>
-		<th>Phone</th>
-	</tr>
-	<!-- Start working with php, and echoing out the data from $addressBook -->
-	<tr>
-		<? foreach ($addressBook as $key => $fields) : ?>
+<div>
+	<table>
 		<tr>
-			<? foreach ($fields as $value) : ?>
-			<td><?= $value; ?></td>
-			
-		<? endforeach; ?>
-		<td><a href="/address_book.php?remove=<?= $key; ?>">X</a></td>
-	</tr>
-<? endforeach; ?>
+			<th>Name</th>
+			<th>Address</th>
+			<th>City</th>
+			<th>State</th>
+			<th>Zip</th>
+			<th>Phone</th>
+		</tr>
+		<!-- Start working with php, and echoing out the data from $addressBook -->
+		<tr>
+			<? foreach ($addressBook as $key => $fields) : ?>
+			<tr>
+				<? foreach ($fields as $value) : ?>
+				<td><?= $value; ?></td>
+
+			<? endforeach; ?>
+			<td><a href="/address_book.php?remove=<?= $key; ?>"><i class="fa fa-check"></i></a></td>
+		</tr>
+	<? endforeach; ?>
 </tr>
 </table>
+</div>
 
 <h4>Add items to the Address Book</h4>
 <form method="POST" action="address_book.php">
@@ -152,8 +179,12 @@ if(isset($_GET['remove'])) {
 	</p>
 </form>
 
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
 </body>
 </html>
-
-
 
