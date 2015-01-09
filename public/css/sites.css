@@ -7,3 +7,23 @@ in a directory named "css" in the web root
     color: blue;
     text-decoration: underline;
 }
+
+.form-control {
+	width: 300px
+}
+
+th {
+    padding: 15px;
+}
+
+td {
+    padding: 15px;
+}
+
+.remove .fa-minus-square,
+.remove:hover .fa-minus-square-o {
+    display: none;
+}
+.remove:hover .fa-minus-square {
+    display: inline;
+}
