@@ -1,50 +1,47 @@
-<?php
+  <?php
+
+require_once('../inc/filestore.php');
+
+$filename = 'data/todo.txt';
+
+$todo_object = new Filestore($filename);
+
 
 $todo_array = [];
 $key = [];
 $removeItem = [];
+$addItem = [];
 
-function savefile($filename, $array) {
-	$handle = fopen($filename, 'w');
-	foreach($array as $item) {
-		fwrite($handle, $item . PHP_EOL);
-	}
-	fclose($handle);
-	$saveMessage = "Save Successful.";
-	echo "<script type='text/javascript'>console.log('$saveMessage');</script>";
-}   
+// used $todo_object to read lines into $todo_array
+$todo_array = $todo_object->read($todo_array);
 
-function openfile($filename){
-	$contentsarray = [];
-	if(filesize($filename) != 0) {
-		$handle = fopen($filename, 'r');
-		$contents = trim(fread($handle, filesize($filename)));
-		$contentsarray = explode("\n", $contents);
-		fclose($handle);
-	} 
-	return $contentsarray;
+$todo_array = $todo_object->read('data/todo.txt');
 
-}
-
-$todo_array = openfile('data/todo.txt');
-
-if(isset($_POST['addItem'])) {
-	$todo_array[] = htmlentities(strip_tags($_POST['addItem']));
-	savefile('data/todo.txt', $todo_array);
-
-}
+try{
+	if(isset($_POST['addItem'])) {
+		if ($_POST['addItem'] == '') {
+			throw new Exception("Error Processing Request. You must input something.");
+		} elseif (strlen($_POST['addItem']) > 240) {
+			throw new Exception("Error Processing Request.  Use 240 characters or less.");
+		} elseif (!is_string($_POST['addItem'])) {
+			throw new Exception("Error Processing Request.  Must be a string.");
+			}
+		$todo_array[] = htmlentities(strip_tags($_POST['addItem']));
+		var_dump('addItem');
+		$todo_object->write($todo_array);
+		}
+	} catch (UnexpectedTypeException $ex) {
+      $error = "<p>Error Processing Request. You must input words.</p>";
+    } catch (Exception $e) {
+       $error = "<p>Error Processing Request. You must input something or use 240 characters or less.</p>";
+        }
 
 if(isset($_GET['remove'])) {
 	$key = $_GET['remove'];
 	unset($todo_array[$key]);
 	$todo_array = array_values($todo_array);
-	savefile('data/todo.txt', $todo_array);
+	$todo_object->write($todo_array);
 }
-
-?>
-
-<?php
-
 
 // Verify there were uploaded files and no errors
 
@@ -63,13 +60,17 @@ if (count($_FILES) > 0 && $_FILES['file1']['error'] == UPLOAD_ERR_OK) {
     // Move the file from the temp location to our uploads directory
 		move_uploaded_file($_FILES['file1']['tmp_name'], $savedFilename);
 
-		$todo_array_uploads = openfile('data/todo.txt');
+		$uploaded = new Filestore($savedFilename);
+
+		$todo_array_uploads = $uploaded->read();
 		$todo_array = array_merge($todo_array, $todo_array_uploads);
-		savefile('data/todo.txt', $todo_array);
+		$todo_object->write($todo_array);
 	}	else {
-		echo "File is not a text file.";
+		throw new Exception("File is not a text file.");
 	}
 }
+
+
 
 ?>
 
