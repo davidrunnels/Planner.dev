@@ -92,18 +92,18 @@ class Filestore {
         }
     }
 
-     public function validateInput($new_item) 
+
+    public function validateInput($string) 
      {
-        if (empty($new_item) || (strlen($new_item) > 240)) {
-            throw new InvalidTodoInputException("Input must be less than 240 characters. ");
+        if (strlen($string) > 240) {
+            throw new Exception("Input must be less than 240 characters. ");
         }
-    }
 
-    public function validateAddressbookInput($input) {
-
-        if (strlen($input) > 125) {
-            throw new InvalidAddressbookInputException("Input can't be longer than 125 characters. ");
+        if (strlen($string) == 0) {
+            throw new Exception("Input can't be empty.");
         }
+
+        return $string;
     }
 
     public function sanitize($array) {
