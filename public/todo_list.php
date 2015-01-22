@@ -11,6 +11,7 @@ $todo_array = [];
 $key = [];
 $removeItem = [];
 $addItem = [];
+$error = '';
 
 // used $todo_object to read lines into $todo_array
 $todo_array = $todo_object->read($todo_array);
@@ -25,15 +26,17 @@ try{
 			throw new Exception("Error Processing Request.  Use 240 characters or less.");
 		} elseif (!is_string($_POST['addItem'])) {
 			throw new Exception("Error Processing Request.  Must be a string.");
-			}
+		}
 		$todo_array[] = htmlentities(strip_tags($_POST['addItem']));
 		$todo_object->write($todo_array);
-		}
-	} catch (UnexpectedTypeException $ex) {
-      $error = "<p>Error Processing Request. You must input words.</p>";
-    } catch (Exception $e) {
-       $error = "<p>Error Processing Request. You must input something or use 240 characters or less.</p>";
-        }
+	}
+} catch (UnexpectedTypeException $e) {
+    $error = "<p>Error Processing Request. You must input words.</p>";
+} catch (Exception $e) {
+    $error = "<p>Error Processing Request. You must input something or use 240 characters or less.</p>";
+}
+
+echo $error;
 
 if(isset($_GET['remove'])) {
 	$key = $_GET['remove'];
