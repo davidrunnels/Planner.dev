@@ -7,8 +7,6 @@ $fields = [];
 
 	$address_object = new AddressDataStore("address_book.csv");
 
-	// var_dump($address_object);
-
 	$addressBook = $address_object->read();
 
 	if (count($_FILES) > 0 && $_FILES['file1']['error'] == UPLOAD_ERR_OK) 
@@ -39,44 +37,40 @@ $fields = [];
 		}
 	}
 
-
-	// print_r($addressBook);
-
 	//Add data from form to $addressBook array.
 
 	if (!empty($_POST)) {
-	//work with post data
-	// var_dump($_POST);
-		$_POST = $address_object->sanitize($_POST);
-		foreach ($_POST as $key => $value) {
-			if (!empty($value)) {
-				$fields[] = $value;
-			} else {
+		
+		$sanitizedArray = $address_object->sanitize($_POST);
 
-				try {
-
-					$address_object->validateAddressbookInput($value);
-				}
-				
-				catch (InvalidAddressbookInputException $e) {
-					echo $e->getMessage();
-					throw new Exception("<p>You must complete {$key} field.</p>");
-				}
+		try {
+			foreach ($sanitizedArray as $key => $value) {
+				$validString = $address_object->validateInput($value);
+				$validAddressArray[] = $validString;
 			}
-		}
-
-	// $fields = [ $_POST['name'], $_POST['street'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['phone'] ];
-	// var_dump($fields);
-
-	// add to array
-
-		array_push($addressBook, $fields);
-	// var_dump($addressBook);
-	// save to file
-		$address_object->write($addressBook);
+			$addressBook[] = $validAddressArray;
+			$address_object->write($addressBook);
+		} catch (Exception $e){
+				$error_message = $e->getMessage();
+				echo "<p> $error_message </p>";
+		} 
 	}
 
-// var_dump($addressBook);
+		// 	if (!empty($value)) {
+		// 		
+		// 	} else {
+
+		// 		try {
+
+		// 			$address_object->validateAddressbookInput($value);
+		// 		}
+				
+		// 		catch (InvalidAddressbookInputException $e) {
+		// 			echo $e->getMessage();
+		// 			throw new Exception("<p>You must complete {$key} field.</p>");
+		// 		}
+		// 	}
+		// }
 
 	if(isset($_GET['remove'])) {
 		$key = $_GET['remove'];
@@ -85,7 +79,7 @@ $fields = [];
 		$address_object->write($addressBook);
 	}
 
-	unset($address_object);
+	// unset($address_object);
 	?>
 
 	<html>
