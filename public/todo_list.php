@@ -27,7 +27,6 @@ try{
 			throw new Exception("Error Processing Request.  Must be a string.");
 			}
 		$todo_array[] = htmlentities(strip_tags($_POST['addItem']));
-		var_dump('addItem');
 		$todo_object->write($todo_array);
 		}
 	} catch (UnexpectedTypeException $ex) {
