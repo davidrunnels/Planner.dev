@@ -2,42 +2,33 @@
 <head>
 <title></title>
 <style>
-
-body {
-    color: blue;
-    
+  
 }
 
 h1 {
-    color: white;
+    font-family: 'Amatic SC', Arial, Sans-Serif
 }
 
 h2 {
-    color: white;
     text-decoration: underline;
     font-family: 'Amatic SC', Arial, Sans-Serif
 }
 
 h3 {
-    color: white;
     font-family: 'Amatic SC', Arial, Sans-Serif
 }
 
-body {
-    background-color: black;
-    background-image: url(http://planner.dev/img/chalkboard-black.jpg);
-}
-
-ul {list-style: circle;
-    color: white;
+ul {
+    list-style: circle;
     font-size: 125%;
     font-family: 'Amatic SC', Arial, Sans-Serif
+
 }
 
 label {font-size: 125%;
     font-family: 'Amatic SC', Arial, Sans-Serif}
 
-p {color: white;}
+p {color: black;}
 
 input {font-size: 150%;
     font-family: 'Amatic SC', Arial, Sans-Serif}
