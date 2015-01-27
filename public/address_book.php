@@ -56,22 +56,6 @@ $fields = [];
 		} 
 	}
 
-		// 	if (!empty($value)) {
-		// 		
-		// 	} else {
-
-		// 		try {
-
-		// 			$address_object->validateAddressbookInput($value);
-		// 		}
-				
-		// 		catch (InvalidAddressbookInputException $e) {
-		// 			echo $e->getMessage();
-		// 			throw new Exception("<p>You must complete {$key} field.</p>");
-		// 		}
-		// 	}
-		// }
-
 	if(isset($_GET['remove'])) {
 		$key = $_GET['remove'];
 		unset($addressBook[$key]);
@@ -79,7 +63,6 @@ $fields = [];
 		$address_object->write($addressBook);
 	}
 
-	// unset($address_object);
 	?>
 
 	<html>
